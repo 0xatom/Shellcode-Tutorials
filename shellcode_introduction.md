@@ -30,6 +30,43 @@ You can get the list of the syscalls by executing :
 
 ![syscalls](https://i.ibb.co/G0TBk65/syscalls.png)
 
+There are 2 methods of executing a syscall in linux. You can use the C libc (library of standard functions) which works indirectly or execute directly with assembly.
+
+The int 0x80 instruction call syscalls in linux. When int 0x80 is executed by a user mode program, CPU switches into kernel mode and executes the syscall.
+
+The process :
+1. The syscall number is loaded into EAX. (EAX Register stores the return value of a function)
+2. Syscall function arguments are placed in other registers.
+3. The instruction int 0x80 is executed.
+4. The CPU switches to kernel mode.
+5. The syscall function is executed.
+
+Each syscall can have a maximum of six arguments, which placed into EBX, ECX, EDX, ESI, EDI, and EPB.
+
+Now let's make a syscall in C & then disassemble the binary. So we can see the assembly instructions. The most basic syscall is exit() (cause normal process termination).
+
+```C
+#include <stdio.h>
+
+main()
+{
+	exit(0);
+}
+```
+
+Let's compile it now.
+
+```bash
+[root@pwn4magic]:~/Desktop# gcc -static -m32 -w exit.c -o exit
+[root@pwn4magic]:~/Desktop# file exit
+exit: ELF 32-bit LSB executable, Intel 80386, version 1 (GNU/Linux), statically linked, BuildID[sha1]=db2e8edbbe52d0a8cf0c58777df3f8bccbd39990, for GNU/Linux 3.2.0, not stripped
+[root@pwn4magic]:~/Desktop# ./exit 
+```
+
+I used the `-m32` option because i use 64bit OS.
+
+
+
 
 
 
