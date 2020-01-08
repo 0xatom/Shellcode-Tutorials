@@ -63,12 +63,40 @@ exit: ELF 32-bit LSB executable, Intel 80386, version 1 (GNU/Linux), statically 
 [root@pwn4magic]:~/Desktop# ./exit 
 ```
 
-I used the `-m32` option because i use 64bit OS.
+I used the `-m32` option because i use 64bit OS. Now let's disassemble the binary.
 
+```asm
+[root@pwn4magic]:~/Desktop# gdb -q exit
+Reading symbols from exit...
+(No debugging symbols found in exit)
+gdb-peda$ disassemble _exit
+Dump of assembler code for function _exit:
+   0x0806bf3a <+0>:	mov    ebx,DWORD PTR [esp+0x4]
+   0x0806bf3e <+4>:	mov    eax,0xfc
+   0x0806bf43 <+9>:	call   DWORD PTR gs:0x10
+   0x0806bf4a <+16>:	mov    eax,0x1
+   0x0806bf4f <+21>:	int    0x80
+   0x0806bf51 <+23>:	hlt    
+End of assembler dump.
+gdb-peda$ 
+```
 
+We have 2 syscalls. The number of the syscall to be called is stored in EAX
 
+```asm
+0x0806bf3e <+4>:	mov    eax,0xfc
+0x0806bf4a <+16>:	mov    eax,0x1
+```
 
+`0xfc = 252 = sys_exit_group`
+`0x1  = 1   = 	sys_exit`
 
+Then we have an instruction that loads the argument for our exit syscall into EBX.
 
+```asm
+0x0806bf3a <+0>:	mov    ebx,DWORD PTR [esp+0x4]
+```
 
+In the end, we have the the ```0x0806bf4f <+21>:	int    0x80``` instrunction, which switch the CPU to kernel mode.
 
+# 0x03 Writing Shellcode for exit() Syscall
