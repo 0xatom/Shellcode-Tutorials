@@ -9,3 +9,15 @@ Table of contents :
 
 # 0x01 What is shellcode ?
 
+Shellcode is our payload, lot of `\x**` characters together. For example `\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\xb0\x0b\xcd\x80` is a piece of shellcode which when executed will spawn a shell. If the vulnerable binary is SETUID will give us a root shell! 
+
+Shellcode generally written in an assembler & translated into hexadecimal opcodes.
+
+You cannot inject shellcode written from a high-level language like (python,ruby etc), because there are thing that will prevent shellcode from executing cleanly & give us shell for example. This is what makes writing shellcode hard.
+
+Hope you now understand what shellcode really is. Let's move on.
+
+# 0x02 System Calls + ASM Analysis
+
+
+
