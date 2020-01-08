@@ -19,5 +19,19 @@ Hope you now understand what shellcode really is. Let's move on.
 
 # 0x02 System Calls + ASM Analysis
 
+Things are getting a bit harder here. Basic ASM/Linux knowledge is must.
+
+One way to control a program is to force it to make a system call(syscall). Syscalls are really powerful functions, that allow you to access operating system functions like : input, ouput, exit, execute. Syscalls allow you to directly access the kernel, which gives you access to low-level functions like reading and writing files. Syscalls are ways by which user mode interacts with the kernel mode.
+
+You can get the list of the syscalls by executing : 
+```bash
+[root@pwn4magic]:~/Desktop# man syscalls
+```
+
+![syscalls](https://i.ibb.co/G0TBk65/syscalls.png)
+
+
+
+
 
 
