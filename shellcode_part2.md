@@ -62,3 +62,55 @@ mov ebx,0
 will be :
 xor ebx,ebx 
 ```
+
+Now you may be wondering why we have nulls in our second instruction `mov eax,1`. We didn’t put a zero value into the register, so why do we have nulls ? Well.. EAX is a 32-bit register & we're moving only one byte into the register but EAX register has space for 4. The rest of the register is going to be filled with nulls.
+
+
+We can get around this problem if we remember that each 32-bit register is broken up into two 16-bit areas. The first 16-bit can be accessed with the AX register. The 16-bit AX register can be broken down further into the AL and AH registers. If you want only the first 8 bits, you can use the AL register. Our binary value of 1 will take up only 8 bits, so we can fit our value into this register and avoid EAX getting filled up with nulls.
+
+Example : 
+
+```
+EAX: 12 34 56 78
+AX: 56 78
+AH: 56
+AL: 78
+```
+
+So we change our instruction :
+
+```asm
+mov eax,1
+to :
+mov al,1
+``` 
+
+Let's test it out now. :)
+
+```asm
+Section  .text
+
+	global _start
+
+_start:
+
+	xor ebx,ebx
+	mov al,1
+	int 0x80
+```
+
+We will use again the nasm assembler to create our object file, and then the GNU linker to link object file.
+
+```bash
+[root@pwn4magic]:~/Desktop# nasm -f elf exit_shellcode.asm
+[root@pwn4magic]:~/Desktop# ld -m elf_i386 exit_shellcode.o -o exit_shellcode
+```
+
+Let's see now.
+
+```bash
+[root@pwn4magic]:~/Desktop# for i in `objdump -d exit_shellcode | tr '\t' ' ' | tr ' ' '\n' | egrep '^[0-9a-f]{2}$' ` ; do echo -n "\x$i" ; done
+\x31\xdb\xb0\x01\xcd\x80
+```
+
+All our null opcodes have been removed, see you in the next tutorial. :)
