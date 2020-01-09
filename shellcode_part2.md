@@ -39,8 +39,26 @@ Let's test it out with python.
 1
 ```
 
-This will be useful now, let's continue.
+This will be useful later, let's continue.
 
 # 0x03 Removing null opcodes
 
+To remove the null opcodes, we have to simply replace assembly instructions that create nulls with other instructions that do not.
 
+Let's take a look into our 3 assembly instructions from the previous tutorial :
+
+```asm
+mov ebx,0          \xbb\x00\x00\x00\x00          
+mov eax,1          \xb8\x01\x00\x00\x00                  
+int 0x80           \xcd\x80  
+```
+
+The first two instructions are responsible for creating the nulls. As we said before, if both bits are equal we put 0 else we put 1. This means that if we use the XOR instruction on two operands that we know are equal, we can get the value of 0 without having to use a value of 0 in an instruction.  
+
+This means that we'll not have a null opcode. Instead of using the mov instruction to set the value of 0 to EBX, let’s use the XOR instruction. So : 
+
+```asm
+mov ebx,0 
+will be :
+xor ebx,ebx 
+```
